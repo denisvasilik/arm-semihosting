@@ -186,7 +186,9 @@
 #![deny(warnings)]
 #![no_std]
 
-extern crate cortex_m;
+extern crate arm_isa_a64;
+extern crate arm_isa_a32;
+extern crate arm_isa_t32;
 
 #[macro_use]
 mod macros;
@@ -209,20 +211,25 @@ pub unsafe fn syscall<T>(nr: usize, arg: &T) -> usize {
 }
 
 /// Performs a semihosting operation, takes one integer as an argument
+/// 
+/// TODO: Check whether your are in thumb mode and perform appropriate operation.
+///
 #[inline(always)]
 pub unsafe fn syscall1(_nr: usize, _arg: usize) -> usize {
     match () {
-        #[cfg(all(thumb, not(feature = "inline-asm")))]
+        #[cfg(all(target_arch = "arm", not(feature = "arm"), feature = "thumb", feature = "inline-asm"))]
+        () => arm_isa_t32::instructions::bkpt(0xAB, _nr, _arg),
+
+        #[cfg(all(target_arch = "arm", not(feature = "thumb"), feature = "arm", feature = "inline-asm"))]
+        () => arm_isa_a32::instructions::svc(0x00123456, _nr, _arg),
+
+        #[cfg(all(target_arch = "arm", not(feature = "arm"), feature = "thumb", not(feature = "inline-asm")))]
+        () => __syscall(_nr, _arg),
+        
+        #[cfg(all(target_arch = "arm", feature = "arm", not(feature = "thumb"), not(feature = "inline-asm")))]
         () => __syscall(_nr, _arg),
 
-        #[cfg(all(thumb, feature = "inline-asm"))]
-        () => {
-            let mut nr = _nr;
-            asm!("bkpt 0xAB" : "+{r0}"(nr) : "{r1}"(_arg) :: "volatile");
-            nr
-        }
-
-        #[cfg(not(thumb))]
+        #[cfg(not(target_arch = "arm"))]
         () => unimplemented!(),
     }
 }
