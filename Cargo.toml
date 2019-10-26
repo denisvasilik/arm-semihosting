@@ -20,12 +20,12 @@ inline-asm = []
 jlink-quirks = []
 
 [dependencies]
-arm-isa-a64 = { path = "../arm-isa-a64" }
+arm-isa-a64 = { git = "https://github.com/denisvasilik/arm-isa-a64" }
 
 [dependencies.arm-isa-a32]
-path = "../arm-isa-a32"
+git = "https://github.com/denisvasilik/arm-isa-a32"
 features = ["inline-asm"]
 
 [dependencies.arm-isa-t32]
-path = "../arm-isa-t32"
+git = "https://github.com/denisvasilik/arm-isa-t32"
 features = ["inline-asm"]
