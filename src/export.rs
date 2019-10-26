@@ -2,7 +2,7 @@
 
 use core::fmt::{self, Write};
 
-use cortex_m::interrupt;
+use arm_isa_a64::interrupt;
 
 use crate::hio::{self, HStderr, HStdout};
 
