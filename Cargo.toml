@@ -7,15 +7,25 @@ description = "Semihosting for ARM Cortex-M processors"
 documentation = "https://docs.rs/cortex-m-semihosting"
 keywords = ["semihosting", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
-name = "cortex-m-semihosting"
+name = "arm-semihosting"
 readme = "README.md"
 repository = "https://github.com/rust-embedded/cortex-m-semihosting"
 version = "0.3.5"
 edition = "2018"
 
 [features]
+arm = []
+thumb = []
 inline-asm = []
 jlink-quirks = []
 
 [dependencies]
-cortex-m = ">= 0.5.8, < 0.7"
+arm-isa-a64 = { path = "../arm-isa-a64" }
+
+[dependencies.arm-isa-a32]
+path = "../arm-isa-a32"
+features = ["inline-asm"]
+
+[dependencies.arm-isa-t32]
+path = "../arm-isa-t32"
+features = ["inline-asm"]
