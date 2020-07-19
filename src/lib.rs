@@ -159,7 +159,7 @@
 //!
 //! ## `inline-asm`
 //!
-//! When this feature is enabled semihosting is implemented using inline assembly (`asm!`) and
+//! When this feature is enabled semihosting is implemented using inline assembly (`llvm_asm!`) and
 //! compiling this crate requires nightly.
 //!
 //! When this feature is disabled semihosting is implemented using FFI calls into an external
@@ -211,7 +211,7 @@ pub unsafe fn syscall<T>(nr: usize, arg: &T) -> usize {
 }
 
 /// Performs a semihosting operation, takes one integer as an argument
-/// 
+///
 /// TODO: Check whether your are in thumb mode and perform appropriate operation.
 ///
 #[inline(always)]
@@ -225,7 +225,7 @@ pub unsafe fn syscall1(_nr: usize, _arg: usize) -> usize {
 
         #[cfg(all(target_arch = "arm", not(feature = "arm"), feature = "thumb", not(feature = "inline-asm")))]
         () => __syscall(_nr, _arg),
-        
+
         #[cfg(all(target_arch = "arm", feature = "arm", not(feature = "thumb"), not(feature = "inline-asm")))]
         () => __syscall(_nr, _arg),
 
